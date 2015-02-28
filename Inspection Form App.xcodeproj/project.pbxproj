@@ -48,9 +48,6 @@
 		F4068536191D38DE006D22A6 /* icon2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F4068532191D38DE006D22A6 /* icon2x.png */; };
 		F4068537191D38DE006D22A6 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = F4068533191D38DE006D22A6 /* Default.png */; };
 		F4068538191D38DE006D22A6 /* launch2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F4068534191D38DE006D22A6 /* launch2x.png */; };
-		F412771419E5C4160092CD67 /* libTestFlight.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F412770E19E5C4160092CD67 /* libTestFlight.a */; };
-		F412771519E5C4160092CD67 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = F412770F19E5C4160092CD67 /* README.md */; };
-		F412771619E5C4160092CD67 /* release_notes.md in Resources */ = {isa = PBXBuildFile; fileRef = F412771019E5C4160092CD67 /* release_notes.md */; };
 		F412771819E5C46D0092CD67 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F412771719E5C46D0092CD67 /* libz.dylib */; };
 /* End PBXBuildFile section */
 
@@ -129,12 +126,6 @@
 		F4068532191D38DE006D22A6 /* icon2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = icon2x.png; path = "Inspection Form App/icon2x.png"; sourceTree = "<group>"; };
 		F4068533191D38DE006D22A6 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = "Inspection Form App/Default.png"; sourceTree = "<group>"; };
 		F4068534191D38DE006D22A6 /* launch2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = launch2x.png; path = "Inspection Form App/launch2x.png"; sourceTree = "<group>"; };
-		F412770E19E5C4160092CD67 /* libTestFlight.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFlight.a; sourceTree = "<group>"; };
-		F412770F19E5C4160092CD67 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
-		F412771019E5C4160092CD67 /* release_notes.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = release_notes.md; sourceTree = "<group>"; };
-		F412771119E5C4160092CD67 /* TestFlight+AsyncLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+AsyncLogging.h"; sourceTree = "<group>"; };
-		F412771219E5C4160092CD67 /* TestFlight+ManualSessions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TestFlight+ManualSessions.h"; sourceTree = "<group>"; };
-		F412771319E5C4160092CD67 /* TestFlight.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFlight.h; sourceTree = "<group>"; };
 		F412771719E5C46D0092CD67 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -146,7 +137,6 @@
 				F412771819E5C46D0092CD67 /* libz.dylib in Frameworks */,
 				8BF09E74153A53E200E1BCB3 /* Security.framework in Frameworks */,
 				8BF3877015239E1200C3F368 /* MessageUI.framework in Frameworks */,
-				F412771419E5C4160092CD67 /* libTestFlight.a in Frameworks */,
 				8BC7D9D31522ACE000D1A863 /* QuartzCore.framework in Frameworks */,
 				8BE8C6FB151538B700D5C7F2 /* libsqlite3.dylib in Frameworks */,
 				8BC58453150ABD87000AC695 /* UIKit.framework in Frameworks */,
@@ -194,7 +184,6 @@
 		8BC58443150ABD87000AC695 = {
 			isa = PBXGroup;
 			children = (
-				F412770D19E5C4160092CD67 /* TestFlightSDK3.0.2 (1) */,
 				F4068531191D38DE006D22A6 /* icon.png */,
 				F4068532191D38DE006D22A6 /* icon2x.png */,
 				F4068533191D38DE006D22A6 /* Default.png */,
@@ -324,19 +313,6 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
-		F412770D19E5C4160092CD67 /* TestFlightSDK3.0.2 (1) */ = {
-			isa = PBXGroup;
-			children = (
-				F412770E19E5C4160092CD67 /* libTestFlight.a */,
-				F412770F19E5C4160092CD67 /* README.md */,
-				F412771019E5C4160092CD67 /* release_notes.md */,
-				F412771119E5C4160092CD67 /* TestFlight+AsyncLogging.h */,
-				F412771219E5C4160092CD67 /* TestFlight+ManualSessions.h */,
-				F412771319E5C4160092CD67 /* TestFlight.h */,
-			);
-			path = "TestFlightSDK3.0.2 (1)";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -413,12 +389,10 @@
 				F4068530191D376C006D22A6 /* logo.png in Resources */,
 				F4068535191D38DE006D22A6 /* icon.png in Resources */,
 				8BF97C1E170669A100E6D242 /* t1_logo.png in Resources */,
-				F412771519E5C4160092CD67 /* README.md in Resources */,
 				F4068538191D38DE006D22A6 /* launch2x.png in Resources */,
 				F4068537191D38DE006D22A6 /* Default.png in Resources */,
 				8B6BA1831708BF1B00E08D9D /* autograph_x.png in Resources */,
 				8B6BA1841708BF1B00E08D9D /* t1_logo.png in Resources */,
-				F412771619E5C4160092CD67 /* release_notes.md in Resources */,
 				F4068536191D38DE006D22A6 /* icon2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -522,7 +496,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -539,10 +513,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
+				VALID_ARCHS = "arm64 armv7";
 			};
 			name = Debug;
 		};
@@ -550,7 +525,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -560,12 +535,13 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "arm64 armv7";
 			};
 			name = Release;
 		};
@@ -573,6 +549,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -585,7 +562,7 @@
 				GCC_PREFIX_HEADER = "Inspection Form App/Inspection Form App-Prefix.pch";
 				"HEADER_SEARCH_PATHS[sdk=*]" = "\"${SRCROOT}/relative/path/to/RESTClient/Source\"";
 				INFOPLIST_FILE = "Inspection Form App/Inspection Form App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/T1Autograph\"",
@@ -600,7 +577,7 @@
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "97D8125D-2790-40AB-B0B7-46251347FD3A";
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "amr64 armv7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -609,6 +586,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				ARCHS = "$(ARCHS_STANDARD)";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -620,16 +598,15 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Inspection Form App/Inspection Form App-Prefix.pch";
 				INFOPLIST_FILE = "Inspection Form App/Inspection Form App-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/T1Autograph\"",
-					"$(PROJECT_DIR)/TestFlightSDK3.0.2",
 					"(1)",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "97D8125D-2790-40AB-B0B7-46251347FD3A";
-				VALID_ARCHS = armv7;
+				VALID_ARCHS = "amr64 armv7";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

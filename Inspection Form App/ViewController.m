@@ -23,6 +23,10 @@
 #import "OrdinalNumberFormatter.h"
 #import "Foundation/NSDateFormatter.h"
 
+static const int CRANE_TYPE_TAG = 1;
+static const int DATE_PICKER_TAG = 2;
+static const int DATE_TEXTFIELD_TAG = 5;
+
 @interface ViewController () {
     ItemListConditionStorage *myItemListStore; 
     DBRestClient *restClient;
@@ -118,6 +122,7 @@
 #define kMaximumVariance        100
 
 - (void)viewDidLoad {
+    [super viewDidLoad];
     [self InitiateParts];
     changeLayoutNeeded = NO;
     iosVersion = [[UIDevice currentDevice] systemVersion];
@@ -140,34 +145,46 @@
         [alert setAlertViewStyle:UIAlertViewStylePlainTextInput];
         [alert show];
     }
+    CraneDescriptionUIPicker = [UIPickerView new];
+    [CraneDescriptionUIPicker setDelegate:self];
+    [CraneDescriptionUIPicker setDataSource:self];
+    CraneDescriptionUIPicker.tag = CRANE_TYPE_TAG;
     txtCraneDescription.inputView = CraneDescriptionUIPicker;
-    txtCraneDescription.inputAccessoryView = selectCraneButton;
+    [txtCraneDescription setInputAccessoryView:[self createInputAccessoryView]];
+
     testLoads =  @"";
     proofLoadDescription = @"";
     loadRatingsText = @"";
     remarksLimitationsImposed = @"";
-    [self.view insertSubview:CustomerInfoFullView atIndex:0];
-    //CustomerInfoScrollView = CustomerInfoView;
     [self createDatabase];
     // Do any additional setup after loading the view, typically from a nib.
     NSDate *now = [NSDate date];
     myDatePicker = [[UIDatePicker alloc] initWithFrame:CGRectZero];
     [myDatePicker setDate:now animated:NO];
     [myDatePicker setDatePickerMode:UIDatePickerModeDate];
-    txtDate.inputView = myDatePicker; 
-    txtDate.inputAccessoryView = btnSelectDate;
+    [myDatePicker addTarget:self action:@selector(updateDateField:) forControlEvents:UIControlEventValueChanged];
+    txtDate.inputView = myDatePicker;
+    [txtDate setInputAccessoryView:[self createInputAccessoryView]];
+    myDatePicker.tag = DATE_PICKER_TAG;
     navBar.topItem.title = @"Inspection Form App";
     optionLocation=0;
     overallRating = @"";
     technicianName = @"";
     txtTechnicianName.text = technicianName;
     manufacturer = @"";
-    //GradientView* myView = [[GradientView alloc] initWithFrame:CGRectMake(0, 0, 320, 100)];
     
     [self didPressLink];
     txtTechnicianName.text = [owner uppercaseString];
-    [super viewDidLoad];
+
 }
+
+- (void) updateDateField : (UIDatePicker *) selectDatePicker {
+    NSDate *date = selectDatePicker.date;
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    txtDate.text = [dateFormatter stringFromDate:date];
+}
+
 - (void)didPressLink {
     if (![[DBSession sharedSession] isLinked]) {
         [[DBSession sharedSession] link];
@@ -229,7 +246,6 @@
     overallRating = nil;
     technicianName = nil;
     [self setCreateCertificateButton:nil];
-    [self setCraneDescriptionUIPicker:nil];
     [self setSelectCraneButton:nil];
     [self setCustomerInfoView:nil];
     [self setCraneInspectionView:nil];
@@ -252,17 +268,18 @@
 {
     if (textField.tag == 12)
     {
-        CraneDescriptionUIPicker.hidden = FALSE;
-        selectCraneButton.hidden = FALSE;
-    } 
+        NSUInteger selectedRow = [CraneDescriptionUIPicker selectedRowInComponent:0];
+        NSString *myCraneDescription = [[CraneDescriptionUIPicker delegate] pickerView:CraneDescriptionUIPicker titleForRow:selectedRow forComponent:0];
+        [activeField setText:myCraneDescription];
+    }
+    else if (textField.tag == DATE_TEXTFIELD_TAG)
+    {
+        [self updateDateField:(UIDatePicker *) textField.inputView];
+    }
     activeField = textField;
 }
 //memmory management
 - (void) textFieldDidEndEditing:(UITextField *)textField {
-    if (textField.tag == 12)
-    {
-        CraneDescriptionUIPicker.hidden = TRUE;
-    }
     activeField = nil;
 }
 
@@ -405,19 +422,9 @@
 - (void) UploadCSVFileToDropbox: (NSString *) fullPath
 {
     //gets the location of the CSV file
-    //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    
-    //create NSString object, that holds our exact path to the documents directory
-    //NSString *documentsDirectory = [NSString stringWithFormat:@"%@/", [paths objectAtIndex:0]];
-    //NSString *localPath = [[NSBundle mainBundle] pathForResource:@"JonnyCranes" ofType:@"csv"];
     NSString *filename = [NSString stringWithFormat:@"%@Cranes.csv", owner];
     NSString *destDir = @"/";
     //makes sure that when the file is uploaded to the Dropbox server the existing file is overwritten, in order to make it so that the file is not overriden the code should look like this
-    /*
-     [[self restClient] uploadFile:filename toPath:destDir
-     parentRev:nil fromPath:fullPath];
-     */
-    
     [[self restClient] uploadFile:filename toPath:destDir
                     fromPath:fullPath];
     
@@ -446,71 +453,26 @@ loadMetadataFailedWithError:(NSError *)error {
     //get inspection from job number
     //[self OpenOrderFromJobNumber];
     //opens the customer information from the job number
-    [self GetCustomerFromJobNumber];
+//    [self GetCustomerFromJobNumber];
     
 }
-//this method gets all customer information and crane information from the JOBS table with the specified jobnumber and displays the information on the home page
-- (void) GetCustomerFromJobNumber
-{/*
-    sqlite3_stmt *statement;
-    const char *dbPath = [databasePath UTF8String];
-    bool orderExist = NO;
-    
-    if (sqlite3_open(dbPath, &contactDB)==SQLITE_OK)
-    { 
-        NSString *selectSQL = [NSString stringWithFormat:@"SELECT JOBNUMBER, CUSTOMERNAME, CONTACT, DATE, ADDRESS, EMAIL, EQUIPNUM, CRANEMFG, HOISTMFG, HOISTMDL, CRANEDESCRIPTION, CAP, CRANESRL FROM JOBS WHERE HOISTSRL=\"%@\"", txtHoistSrl.text];
-        const char *select_stmt = [selectSQL UTF8String];
-        if (sqlite3_prepare_v2(contactDB, select_stmt, -1, &statement, NULL)==SQLITE_OK)
-        {
-            while (sqlite3_step(statement) == SQLITE_ROW)
-            {
-                orderExist = YES;
-                const char *hoistSrl = (char*) sqlite3_column_text(statement, 0);
-                const char *custName = (char*) sqlite3_column_text(statement, 1);
-                const char *contact = (char*) sqlite3_column_text(statement, 2);
-                const char *date = (char*) sqlite3_column_text(statement, 3);
-                const char *address = (char*) sqlite3_column_text(statement, 4);
-                const char *email = (char*) sqlite3_column_text(statement, 5);
-                const char *equipNum = (char*) sqlite3_column_text(statement, 6);
-                const char *craneMfg = (char*) sqlite3_column_text(statement, 7);
-                const char *hoistMfg = (char*) sqlite3_column_text(statement, 8);
-                const char *hoistMdl = (char*) sqlite3_column_text(statement, 9);
-                const char *craneDescription = (char*) sqlite3_column_text(statement, 10);
-                const char *cap = (char*) sqlite3_column_text(statement, 11);
-                const char *craneSrl = (char*) sqlite3_column_text(statement, 12);
-                //makes sure that the job number stays displayed
-                NSString *jobNumber = txtJobNumber.text;
-                [self EmptyTextFields];
-                txtJobNumber.text = jobNumber;
-                
-                txtHoistSrl.text = [NSString stringWithUTF8String:hoistSrl];
-                txtCustomerName.text = [NSString stringWithUTF8String:custName];
-                txtCustomerContact.text = [NSString stringWithUTF8String:contact];
-                txtDate.text = [NSString stringWithUTF8String:date];
-                txtAddress.text = [NSString stringWithUTF8String:address];
-                txtEmail.text = [NSString stringWithUTF8String:email];
-                txtEquipNum.text = [NSString stringWithUTF8String:equipNum];
-                txtCraneMfg.text = [NSString stringWithUTF8String:craneMfg];
-                txtHoistMfg.text = [NSString stringWithUTF8String:hoistMfg];
-                txtHoistMdl.text = [NSString stringWithUTF8String:hoistMdl];
-                txtCraneDescription.text = [NSString stringWithUTF8String:craneDescription];
-                txtCap.text = [NSString stringWithUTF8String:cap];
-                txtCraneSrl.text = [NSString stringWithUTF8String:craneSrl];
-                lblCraneDesc.text = [NSString stringWithUTF8String:craneDescription];
-                
-                NSLog(@"Retrieved condition from the table");
-            }
-               //UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success" message:@"Did retrieve succesfully" delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"ok", nil];
-               //[alert show];
-        }
-        else {
-            NSLog(@"Failed to find jobnumber in table");
-        }
-    }
-*/
-}
-//Create a CSV file from the CRANES_DONE table and then uploads file to Dropbox
 
+- (UIView *) createInputAccessoryView {
+    UIView *inputAccView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 320.0f, 60.0f)];
+    [inputAccView setBackgroundColor:[UIColor colorWithRed:0.0f green:0.0f blue:0.0f alpha:.8f]];
+    
+    UIButton *btnDone = [UIButton buttonWithType:UIButtonTypeSystem];
+    [btnDone setFrame:CGRectMake(10, 10, 50.0f, 40.0f)];
+    [btnDone setTitle:@"Done" forState:UIControlStateNormal];
+    [btnDone setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
+    [btnDone addTarget:self action:@selector(hideKeyboard) forControlEvents:UIControlEventTouchUpInside];
+    [inputAccView addSubview:btnDone];
+    return inputAccView;
+}
+
+- (void) hideKeyboard {
+    [activeField resignFirstResponder];
+}
 
 - (IBAction)SelectCraneDescriptionPressed:(id)sender {
     NSUInteger selectedRow = [CraneDescriptionUIPicker selectedRowInComponent:0];
@@ -519,7 +481,6 @@ loadMetadataFailedWithError:(NSError *)error {
     txtCraneDescription.text = myCraneDescription;
     selectCraneButton.hidden = TRUE;
     [self textFieldDidEndEditing:activeField];
-    [CraneDescriptionUIPicker removeFromSuperview];
     [txtCraneDescription resignFirstResponder];
     Parts *parts = [[Parts alloc] init : txtCraneDescription.text];
     myPartsArray = [parts myParts];
@@ -1631,8 +1592,6 @@ loadMetadataFailedWithError:(NSError *)error {
     CGContextClosePath(pdfContext);
     CGContextDrawPath(pdfContext, kCGPathFillStroke);
     
-    
-    [self displayComposerSheet];
     // Clean up
     UIGraphicsPopContext();
     CGPDFContextEndPage(pdfContext);
@@ -1833,8 +1792,7 @@ loadMetadataFailedWithError:(NSError *)error {
     // Clean up
     UIGraphicsPopContext();
     CGPDFContextEndPage(pdfContext);
-    CGPDFContextClose(pdfContext);   
-    [self displayComposerSheet];
+    CGPDFContextClose(pdfContext);
     //release memory
     fileURL = nil;
     pdfContext = nil;
@@ -1884,52 +1842,6 @@ loadMetadataFailedWithError:(NSError *)error {
     CreateCertificateButton.enabled = FALSE;
     //[CraneInspectionView removeFromSuperview];
     //[self.view addSubview:self.autographController.view];
-}
-
-- (void) displayComposerSheet
-{
-    /*
-    MFMailComposeViewController *picker = [[MFMailComposeViewController alloc] init];
-    picker.mailComposeDelegate = self;
-    
-    [picker setSubject:@"Your Inspection Results"];
-    
-    // Set up the recipients.
-    NSArray *toRecipients = [NSArray arrayWithObjects:@"adeiji@yahoo.com",
-                             nil];
-    NSArray *ccRecipients = [NSArray arrayWithObjects:@"adebayoiji@gmail.com",
-                             @"third@example.com", nil];
-    NSArray *bccRecipients = [NSArray arrayWithObjects:@"four@example.com",
-                              nil];
-    
-    [picker setToRecipients:toRecipients];
-    [picker setCcRecipients:ccRecipients];
-    [picker setBccRecipients:bccRecipients];
-    
-    // Attach an image to the email.
-    NSString *path = @"/Users/Developer/Documents/jobInfo.pdf";
-    NSData *myData = [NSData dataWithContentsOfFile:path];
-    [picker addAttachmentData:myData mimeType:@"application/pdf"
-                     fileName:@"jobInfo.pdf"];
-    
-    // Fill out the email body text.
-    NSString *emailBody = @"Here is your inspection information!";
-    [picker setMessageBody:emailBody isHTML:NO];
-    
-    // Present the mail composition interface.
-    [self presentModalViewController:picker animated:YES];
-    // Can safely release the controller now.
-    
-   
-    NSString *fileToOpen = @"/Users/Developer/Documents/jobInfo.pdf";
-    
-    controller = [UIDocumentInteractionController interactionControllerWithURL:[NSURL fileURLWithPath:fileToOpen]];
-    controller.delegate = self;
-    
-    CGRect navRect = secondViewController.navigationController.navigationBar.frame;
-    navRect.size = CGSizeMake(1500.0f, 40.0f);
-    [controller presentOpenInMenuFromRect:navRect inView:viewPDFController.view animated:YES];
-*/
 }
 
 // The mail compose view controller delegate method
@@ -2418,8 +2330,7 @@ loadMetadataFailedWithError:(NSError *)error {
     myPartsArray = [parts myParts];
     [self fillOptionArrays];
     [self changeLayout:optionLocation];
-    [self.CustomerInfoFullView removeFromSuperview];
-    [self.view insertSubview:self.CraneInspectionView atIndex:0];
+    [self.view addSubview:self.CraneInspectionView];
 }
 
 -(void) didReceiveMemoryWarning
@@ -2531,8 +2442,7 @@ loadMetadataFailedWithError:(NSError *)error {
         [self fillOptionArrays];
         [self changeLayout:optionLocation];
         [self InsertCustomerIntoTable];
-        [self.CustomerInfoFullView removeFromSuperview];
-        [self.view insertSubview:self.CraneInspectionView atIndex:0];
+        [self.view addSubview:self.CraneInspectionView];
     }
 }
 
@@ -2674,12 +2584,6 @@ loadMetadataFailedWithError:(NSError *)error {
     CustomerInfoScrollView.scrollIndicatorInsets = contentInsets;
 }
 
-
-
-//-------------------------------------------------T O U C H  E V E N T S----------------------------------------------------------------------------
-
-
-
 #pragma mark - Touch Events
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
     UITouch *touch = [touches anyObject];
@@ -2704,14 +2608,17 @@ loadMetadataFailedWithError:(NSError *)error {
     }
 }
 
-
-
-
-//-------------------------------------------------PICKER VIEW DELEGATE METHODS----------------------------------------------------------------------------
-
-
-
 #pragma mark Picker Data Source Methods
+
+- (void) pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if (pickerView.tag == CRANE_TYPE_TAG)
+    {
+        NSString *myCraneDescription = [[CraneDescriptionUIPicker delegate] pickerView:CraneDescriptionUIPicker titleForRow:row forComponent:0];
+        
+        txtCraneDescription.text = myCraneDescription;
+    }
+}
 
 - (NSInteger)numberOfComponentsInPickerView:(UIPickerView *) pickerView {
     if (pickerView.tag == 0)
@@ -2754,7 +2661,6 @@ loadMetadataFailedWithError:(NSError *)error {
     NSString *myDeficientPart = [[DefficiencyPicker delegate] pickerView:DefficiencyPicker titleForRow:selectedRow forComponent:0];
     [self saveInfo:txtNotes.text :defficiencySwitch.on:[DefficiencyPicker selectedRowInComponent:0]:myDeficientPart:applicableSwitch.on];
     [self.CraneInspectionView removeFromSuperview];
-    [self.view insertSubview:self.CustomerInfoFullView atIndex:0];
     
 }
 //Create the objects necessary to view the parts list

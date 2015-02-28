@@ -30,14 +30,9 @@
     [DBSession setSharedSession:dbSession];
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
-    //self.splitViewController = [[SplitViewController alloc] initWithNibName:@"SplitViewController" bundle:nil];
-    
     self.viewController = [[ViewController alloc] initWithNibName:@"ViewController" bundle:nil];
-    //UIView *view = self.viewController.view;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    UIView *view = self.viewController.view;
-    [view setFrame:[[UIScreen mainScreen] applicationFrame]];
-    [self.window addSubview:self.viewController.view];
+    self.window.rootViewController = self.viewController;
     [self.window makeKeyAndVisible];
 
     return YES;

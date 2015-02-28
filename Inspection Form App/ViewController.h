@@ -26,7 +26,7 @@
 
 @property (weak, nonatomic) IBOutlet UISwitch *defficiencySwitch;
 @property (strong, nonatomic) IBOutlet UIPickerView *DefficiencyPicker;
-@property (weak, nonatomic) IBOutlet UIButton *btnSelectDate;
+@property (strong, nonatomic) UIButton *btnSelectDate;
 @property (strong, nonatomic) IBOutlet UIDatePicker *datePicker;
 @property (weak, nonatomic) IBOutlet UITextField *txtDate;
 @property (strong, nonatomic) IBOutlet UIDatePicker *myDatePicker;
@@ -80,9 +80,9 @@
 @property (weak, nonatomic) IBOutlet UILabel *lblCraneDesc;
 @property (weak, nonatomic) IBOutlet UISwitch *applicableSwitch;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *CreateCertificateButton;
-@property (strong, nonatomic) IBOutlet UIPickerView *CraneDescriptionUIPicker;
+@property (strong, nonatomic) UIPickerView *CraneDescriptionUIPicker;
 @property (strong, nonatomic) NSMutableArray *craneDescriptionsArray;
-@property (weak, nonatomic) IBOutlet UIButton *selectCraneButton;
+@property (strong, nonatomic) UIButton *selectCraneButton;
 
 - (IBAction)SelectCraneDescriptionPressed:(id)sender;
 - (IBAction)UpdateButtonPressed:(id)sender;
